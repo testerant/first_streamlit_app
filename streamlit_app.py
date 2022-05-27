@@ -24,7 +24,6 @@ fruits_to_show = my_fruit_list.loc[fruits_selected]
 #display the table on the page
 streamlit.dataframe(fruits_to_show)
 
-
 #create the repeatable code block (called a function)
 def get_fruityvice_data(this_fruit_choice):
   fruityvice_response = requests.get("https://fruityvice.com/api/fruit/" + this_fruit_choice)
@@ -60,14 +59,15 @@ if streamlit.button('Get Fruit List'):
 
 # Allow the end user to add a fruit to the list
 def insert_row_snowflake(new_fruit):
-  with my_cnx.cursor() as my_cur:
-       my_cur.execute("insert into fruit_load_list values (' " + new_fruit +"')")
-       return "Thanks for adding " + new_fruit
-  
+    with my_cnx.cursor() as my_cur:
+         my_cur.execute("insert into fruit_load_list values (' " + new_fruit +"')")
+         return "Thanks for adding " + new_fruit
+
 add_my_fruit = streamlit.text_input('What fruit would you like to add?')
 if streamlit.button('Add a Fruit to the List'):
-  back_from_function = insert_row_snowflake(add_my_fruit)
-  streamlit.text(back_from_function)
+   my_cnx = snowflake.connector.connet(**streamlit.secrets["snowflake"])
+   back_from_function = insert_row_snowflake(add_my_fruit)
+   streamlit.text(back_from_function)
 
 # don't run anything past here while we troubleshoot
 streamlit.stop()
